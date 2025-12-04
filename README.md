@@ -1,51 +1,154 @@
-# Starter Template for Expo with Typescript and Navigation
-![image](https://github.com/ikhlasdansantai/expo-typescript-nativewind-template/assets/95151018/c567bfee-2126-461a-ba76-9a12edbba1cb)
+# React Native Inventory App
 
-including
-- expo-router
-- nativewind
-- tailwind 3.3.2
-- Path Alias (@)
-- typescript (ofc :D)
-- @expo/vector-icons
-- Manrope fonts
+## Overview
+This is a React Native Inventory Management App that lets users:
+- View all inventory items
+- Add new items
+- Edit existing items
+- Delete items
 
-How To Running your application 🤔
+The app connects to a Node.js backend API.
 
-install dep
-```bash
+---
+
+## Features
+- React Native UI
+- React Navigation
+- Axios API integration
+- Full CRUD operations
+- Loading states + alerts
+
+---
+
+## Project Setup
+
+### 1. Install dependencies
 npm install
-or 
-yarn install
-```
 
-Run your app on emulator or your mobile phone
-```bash
-npm run start -c
-or 
-npm run android
-```
+### 2. Create .env file
+API_URL=https://http://localhost:3000/api/
 
-### Note
-If you encounter the following error message:
-```bash
-Cannot find module '../assets/images/icon.png' or its corresponding type declarations.
-```
+### 3. Start the project
+npm start
 
-You need to declare the type for the respective file format. You can achieve this by adding the following code to `app.d.ts`
-```ts
-declare module "*.png" {
-  const value: ImageSourcePropType;
-  export default value;
+---
+
+## API File Setup
+Edit: `src/services/api.ts`
+
+Example:
+
+import axios from "axios";
+import { API_URL } from "@env";
+
+export const api = {
+  async getItem(id) {
+    const r = await axios.get(`${API_URL}/items/${id}`);
+    return r.data;
+  },
+
+  async createItem(data) {
+    const r = await axios.post(`${API_URL}/items`, data);
+    return r.data;
+  },
+
+  async updateItem(id, data) {
+    const r = await axios.put(`${API_URL}/items/${id}`, data);
+    return r.data;
+  }
+};
+
+---
+
+## Run on Android/iOS
+npm run android  
+npm run ios
+
+---
+
+# Inventory Backend API (Node.js + Express + MySQL)
+
+## Overview
+This backend provides REST API endpoints for the React Native Inventory App.
+
+Features:
+- Create items
+- Read items
+- Update items
+- Delete items
+- MySQL database
+
+---
+
+## Technologies
+- Node.js
+- Express.js
+- MySQL
+- Sequelize ORM
+
+---
+
+## Setup Instructions
+
+### 1. Install dependencies
+npm install
+
+### 2. Create .env file
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=inventorydb
+PORT=5000
+
+### 3. Start MySQL and run:
+CREATE DATABASE inventorydb;
+
+### 4. Start the server
+npm start
+
+---
+
+## API Endpoints
+
+### GET /api/items
+Fetch all items
+
+### GET /api/items/:id
+Fetch single item
+
+### POST /api/items
+Create item  
+Body example:
+{
+  "name": "Tomatoes",
+  "category": "Veg",
+  "quantity": 10,
+  "description": "Fresh"
 }
 
-declare module "*.jpg" {
-  const value: ImageSourcePropType;
-  export default value;
-}
+### PUT /api/items/:id
+Update item
 
-declare module "*.jpeg" {
-  const value: ImageSourcePropType;
-  export default value;
-}
-```
+### DELETE /api/items/:id
+Delete item
+
+---
+
+## Folder Structure
+/routes  
+/models  
+/config  
+/server.js  
+
+---
+
+## Test with Postman
+Base URL:
+http://localhost:3000/api
+
+
+
+
+
+## Build APK (optional)
+eas build -p android
