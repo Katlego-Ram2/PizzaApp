@@ -1,18 +1,94 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 export default function InventoryScreen() {
   const router = useRouter();
 
-  const allItems = [
+  const [allItems, setAllItems] = useState([
     { id: '1', name: 'Margherita', qty: 8, note: 'Chef special' },
     { id: '2', name: 'Pepperoni', qty: 4, note: 'Low stock' },
     { id: '3', name: 'Dough Balls', qty: 20, note: 'Fresh batch' },
     { id: '4', name: 'Cheese', qty: 15, note: 'Mozzarella blocks' },
     { id: '5', name: 'Tomato Sauce', qty: 9, note: 'Homemade blend' },
-  ];
+  ]);
+
+  // Remove item
+  const removeItem = (id: string) => {
+    Alert.alert('Remove Item', 'Are you sure you want to remove this item?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Remove',
+        style: 'destructive',
+        onPress: () => setAllItems((prev) => prev.filter((item) => item.id !== id)),
+      },
+    ]);
+  };
+
+  // Edit item (for demo purposes we just alert)
+  const editItem = (id: string) => {
+    const item = allItems.find((i) => i.id === id);
+    if (item) {
+      Alert.prompt(
+        'Edit Item',
+        `Update quantity for ${item.name}`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Save',
+            onPress: (text) => {
+              const qty = Number(text);
+              if (!isNaN(qty)) {
+                setAllItems((prev) =>
+                  prev.map((i) => (i.id === id ? { ...i, qty } : i))
+                );
+              } else {
+                Alert.alert('Invalid', 'Enter a valid number');
+              }
+            },
+          },
+        ],
+        'plain-text',
+        item.qty.toString()
+      );
+    }
+  };
+
+  // Add new item
+  const addItem = () => {
+    Alert.prompt(
+      'Add New Item',
+      'Enter name and quantity separated by a comma (e.g., Cheese,10)',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Add',
+          onPress: (text) => {
+            if (text) {
+              const [name, qtyStr] = text.split(',');
+              const qty = Number(qtyStr);
+              if (name && !isNaN(qty)) {
+                setAllItems((prev) => [
+                  ...prev,
+                  { id: (prev.length + 1).toString(), name, qty, note: '' },
+                ]);
+              } else {
+                Alert.alert('Invalid', 'Please enter valid name and quantity');
+              }
+            }
+          },
+        },
+      ],
+      'plain-text'
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -26,26 +102,48 @@ export default function InventoryScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Add Item button */}
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+ Add New Item</Text>
-        </TouchableOpacity>
+       <TouchableOpacity
+  style={styles.addButton}
+  onPress={() => router.push("/inventory/add")} // navigate to Add Item tab/screen
+>
+  <Text style={styles.addButtonText}>+ Add New Item</Text>
+</TouchableOpacity>
 
         {/* Inventory list */}
         <View>
           <Text style={styles.sectionTitle}>All Items</Text>
           <View style={{ marginTop: 10 }}>
             {allItems.map((item) => (
-              <TouchableOpacity key={item.id} style={styles.itemCard}>
+              <View key={item.id} style={styles.itemCard}>
                 <View style={styles.itemRow}>
                   <View>
                     <Text style={styles.itemName}>{item.name}</Text>
                     <Text style={styles.itemNote}>{item.note}</Text>
                   </View>
-                  <Text style={[styles.itemQty, item.qty < 5 ? styles.qtyLow : styles.qtyNormal]}>
-                    {item.qty}
-                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text
+                      style={[
+                        styles.itemQty,
+                        item.qty < 5 ? styles.qtyLow : styles.qtyNormal,
+                      ]}
+                    >
+                      {item.qty}
+                    </Text>
+                    <TouchableOpacity
+                      style={{ marginLeft: 12 }}
+                      onPress={() => editItem(item.id)}
+                    >
+                      <Text style={{ color: '#4f46e5' }}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ marginLeft: 12 }}
+                      onPress={() => removeItem(item.id)}
+                    >
+                      <Text style={{ color: '#ef4444' }}>Remove</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </TouchableOpacity>
+              </View>
             ))}
           </View>
         </View>

@@ -85,7 +85,7 @@ export default function TabTwoScreen() {
       {/* Footer */}
       <View style={{ marginTop: 40, alignItems: "center" }}>
         <Text style={{ color: "#6b7280", fontSize: 12, marginBottom: 4 }}>
-          © 2025 Seedway Agri College — Kitchen Dashboard
+          © 2025 Pizza — Kitchen Dashboard
         </Text>
         <Text style={{ color: "#6b7280", fontSize: 12, marginBottom: 8 }}>
           Version 1.0.0

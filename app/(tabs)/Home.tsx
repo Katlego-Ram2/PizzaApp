@@ -4,9 +4,11 @@ import { ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "@/components/Themed";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function Home() {
+  const router = useRouter();
+
   const featured = [
     { id: "1", name: "Margherita", qty: 8, note: "Chef special" },
     { id: "2", name: "Pepperoni", qty: 4, note: "Low stock" },
@@ -31,7 +33,10 @@ export default function Home() {
 
         {/* Quick Actions */}
         <View style={styles.quickActions}>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => router.push("/inventory/add")}
+          >
             <FontAwesome name="plus" size={20} color="white" style={{ marginRight: 8 }} />
             <Text style={styles.addButtonText}>Add Item</Text>
           </TouchableOpacity>
@@ -46,11 +51,14 @@ export default function Home() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Top items</Text>
-            <Link href="/inventory" asChild>
-              <TouchableOpacity style={styles.viewAllButton}>
-                <Text style={styles.viewAllText}>View all</Text>
-              </TouchableOpacity>
-            </Link>
+
+            {/* View all button */}
+            <TouchableOpacity
+              style={styles.viewAllButton}
+              onPress={() => router.push("/inventory")}
+            >
+              <Text style={styles.viewAllText}>View all</Text>
+            </TouchableOpacity>
           </View>
 
           {featured.map((item) => (
@@ -106,7 +114,6 @@ export default function Home() {
             </View>
           ))}
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );

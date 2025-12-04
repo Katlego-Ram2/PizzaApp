@@ -1,22 +1,12 @@
 import { useMutation, useQueryClient, UseMutationResult } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { ItemPayload } from '@/lib/types'; // ✅ use unified type
 
-export type ItemPayload = {
-  _id?: string;
-  name: string;
-  sku?: string;
-  quantity: number;
-  unit?: string;
-  category?: string;
-  notes?: string;
-};
-
-// Explicit generics & return type
 export const useCreateItem = (): UseMutationResult<
-  any,        // TData returned by mutation
-  Error,      // TError
-  ItemPayload, // TVariables (payload)
-  unknown     // TContext
+  any,
+  Error,
+  ItemPayload,
+  unknown
 > => {
   const queryClient = useQueryClient();
 
