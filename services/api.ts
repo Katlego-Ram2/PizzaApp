@@ -1,35 +1,41 @@
 import axios from "axios";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+const BASE_URL = process.env.API_URL || "http://localhost:3000/api"; // make sure .env has API_URL
 
 export const api = {
-  // Get one item
-  getItem: async (id: string) => {
-    const res = await axios.get(`${API_URL}/inventory/${id}`);
-    return res.data;
-  },
-
-  // Get all items
   getItems: async () => {
-    const res = await axios.get(`${API_URL}/inventory`);
+    const res = await axios.get(`${BASE_URL}/inventory`);
     return res.data;
   },
 
-  // Create item
+  getItem: async (id: string) => {
+    const res = await axios.get(`${BASE_URL}/inventory/${id}`);
+    return res.data;
+  },
+
   createItem: async (payload: any) => {
-    const res = await axios.post(`${API_URL}/inventory`, payload);
+    const res = await axios.post(`${BASE_URL}/inventory`, payload);
     return res.data;
   },
 
-  // Update item
   updateItem: async (id: string, payload: any) => {
-    const res = await axios.put(`${API_URL}/inventory/${id}`, payload);
+    const res = await axios.put(`${BASE_URL}/inventory/${id}`, payload);
     return res.data;
   },
 
-  // Delete item
   deleteItem: async (id: string) => {
-    const res = await axios.delete(`${API_URL}/inventory/${id}`);
+    const res = await axios.delete(`${BASE_URL}/inventory/${id}`);
+    return res.data;
+  },
+
+  // ✅ Add this for quantity adjustments
+  adjustQuantity: async (id: string, quantity: number, note?: string) => {
+    const res = await axios.post(`${BASE_URL}/inventory/adjust`, {
+      itemId: id,
+      quantity,
+      type: quantity > 0 ? "add" : "remove",
+      note,
+    });
     return res.data;
   },
 };
