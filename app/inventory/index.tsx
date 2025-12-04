@@ -1,13 +1,11 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link, useRouter } from 'expo-router';
-import InventoryPreview from '@/components/InventoryPreview';
+import { useRouter } from 'expo-router';
 
 export default function InventoryScreen() {
   const router = useRouter();
 
-  // Example inventory list — replace with API or local data
   const allItems = [
     { id: '1', name: 'Margherita', qty: 8, note: 'Chef special' },
     { id: '2', name: 'Pepperoni', qty: 4, note: 'Low stock' },
@@ -17,46 +15,33 @@ export default function InventoryScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View className="p-5 border-b border-gray-200 flex-row items-center justify-between">
-        <Text className="text-2xl font-bold">Inventory</Text>
-
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="px-3 py-1 rounded-full border border-gray-300"
-        >
-          <Text className="text-gray-700">Back</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Inventory</Text>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Add Item button */}
-        <TouchableOpacity className="bg-indigo-600 p-4 rounded-2xl mb-5 items-center">
-          <Text className="text-white font-semibold">+ Add New Item</Text>
+        <TouchableOpacity style={styles.addButton}>
+          <Text style={styles.addButtonText}>+ Add New Item</Text>
         </TouchableOpacity>
 
         {/* Inventory list */}
         <View>
-          <Text className="text-lg font-semibold mb-3">All Items</Text>
-
-          <View className="space-y-3">
+          <Text style={styles.sectionTitle}>All Items</Text>
+          <View style={{ marginTop: 10 }}>
             {allItems.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                className="bg-white p-4 rounded-xl shadow-sm border border-gray-100"
-              >
-                <View className="flex-row justify-between items-center">
+              <TouchableOpacity key={item.id} style={styles.itemCard}>
+                <View style={styles.itemRow}>
                   <View>
-                    <Text className="font-semibold text-lg">{item.name}</Text>
-                    <Text className="text-sm text-gray-500">{item.note}</Text>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemNote}>{item.note}</Text>
                   </View>
-                  <Text
-                    className={`text-base font-bold ${
-                      item.qty < 5 ? "text-red-500" : "text-green-600"
-                    }`}
-                  >
+                  <Text style={[styles.itemQty, item.qty < 5 ? styles.qtyLow : styles.qtyNormal]}>
                     {item.qty}
                   </Text>
                 </View>
@@ -65,8 +50,61 @@ export default function InventoryScreen() {
           </View>
         </View>
 
-        <View className="h-24" />
+        <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f9fafb' },
+  header: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerTitle: { fontSize: 24, fontWeight: '700', color: '#111827' },
+  backButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+  },
+  backText: { color: '#374151', fontWeight: '500' },
+  scrollContainer: { padding: 20 },
+  addButton: {
+    backgroundColor: '#4f46e5',
+    paddingVertical: 14,
+    borderRadius: 20,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+  },
+  addButtonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#111827' },
+  itemCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    shadowColor: '#000',
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  itemName: { fontSize: 16, fontWeight: '600', color: '#111827' },
+  itemNote: { fontSize: 12, color: '#6b7280', marginTop: 2 },
+  itemQty: { fontSize: 16, fontWeight: '700' },
+  qtyLow: { color: '#dc2626' },
+  qtyNormal: { color: '#16a34a' },
+});

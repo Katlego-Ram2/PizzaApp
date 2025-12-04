@@ -28,7 +28,6 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -39,9 +38,7 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return <RootLayoutNav />;
 }
@@ -49,8 +46,43 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
+  // Custom light and dark themes
+  const MyLightTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: "#4f46e5", // Indigo
+      background: "#f9fafb", // Light gray
+      card: "#ffffff", // White headers/cards
+      text: "#111827", // Dark text
+      border: "#e5e7eb", // Light border
+      notification: "#f59e0b", // Accent (orange)
+    },
+    fonts: {
+      regular: "Manrope-Regular",
+      bold: "Manrope-Bold",
+    },
+  };
+
+  const MyDarkTheme = {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      primary: "#6366f1", // Indigo
+      background: "#111827", // Dark background
+      card: "#1f2937", // Dark card
+      text: "#f9fafb", // Light text
+      border: "#374151", // Dark border
+      notification: "#f59e0b",
+    },
+    fonts: {
+      regular: "Manrope-Regular",
+      bold: "Manrope-Bold",
+    },
+  };
+
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? MyDarkTheme : MyLightTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
